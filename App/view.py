@@ -24,13 +24,13 @@
  *
  """
 
-
 import sys
 import config
 import threading
 from App import controller
 from DISClib.ADT import stack
 assert config
+import time
 
 """
 La vista se encarga de la interacción con el usuario.
@@ -43,14 +43,12 @@ operación seleccionada.
 #  Variables
 # ___________________________________________________
 
-
-servicefile = 'bus_routes_14000.csv'
+servicefile = 'singapur_bus_routes/bus_routes_14000.csv'
 initialStation = None
 
 # ___________________________________________________
 #  Menu principal
 # ___________________________________________________
-
 
 def printMenu():
     print("\n")
@@ -66,7 +64,6 @@ def printMenu():
     print("0- Salir")
     print("*******************************************")
 
-
 def optionTwo(cont):
     print("\nCargando información de transporte de singapur ....")
     controller.loadServices(cont, servicefile)
@@ -76,22 +73,18 @@ def optionTwo(cont):
     print('Numero de arcos: ' + str(numedges))
     print('El limite de recursion actual: ' + str(sys.getrecursionlimit()))
 
-
 def optionThree(cont):
     print('El número de componentes conectados es: ' +
           str(controller.connectedComponents(cont)))
 
-
 def optionFour(cont, initialStation):
     controller.minimumCostPaths(cont, initialStation)
-
 
 def optionFive(cont, destStation):
     haspath = controller.hasPath(cont, destStation)
     print('Hay camino entre la estación base : ' +
           'y la estación: ' + destStation + ': ')
     print(haspath)
-
 
 def optionSix(cont, destStation):
     path = controller.minimumCostPath(cont, destStation)
@@ -104,17 +97,14 @@ def optionSix(cont, destStation):
     else:
         print('No hay camino')
 
-
 def optionSeven(cont):
     maxvert, maxdeg = controller.servedRoutes(cont)
     print('Estación: ' + maxvert + '  Total rutas servidas: '
           + str(maxdeg))
 
-
 """
 Menu principal
 """
-
 
 def thread_cycle():
     while True:
@@ -135,7 +125,11 @@ def thread_cycle():
         elif int(inputs[0]) == 4:
             msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "
             initialStation = input(msg)
+            start_time = time.process_time()
             optionFour(cont, initialStation)
+            stop_time = time.process_time()
+            elapsed_time_mseg = (stop_time - start_time)
+            print("Tiempo de ejecución: " + str(elapsed_time_mseg))
 
         elif int(inputs[0]) == 5:
             destStation = input("Estación destino (Ej: 15151-10): ")
@@ -151,7 +145,6 @@ def thread_cycle():
         else:
             sys.exit(0)
     sys.exit(0)
-
 
 if __name__ == "__main__":
     threading.stack_size(67108864)  # 64MB stack
